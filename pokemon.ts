@@ -3,8 +3,8 @@
 // battle continues until 1 pokemon faints (0 HP)
 const pokemonA: string = 'Snorlax'
 const pokemonB: string = 'Mr. Mime'
-let aHP: number = 200
-let bHP: number = 200
+let aHP: number = 300
+let bHP: number = 188
 const damage = 50
 
 console.log('You are now battling Sabrina')
@@ -36,6 +36,7 @@ while (aHP > 0 && bHP > 0) {
     console.log(`${pokemonA} hits ${pokemonB} for ${damage} damage`)
     bHP = bHP - damage
     console.log(`${pokemonB}'s HP is reduced to ${bHP} HP`)
+    isMyTurn = !isMyTurn
   } else {
     // i cannot pick a move
     console.log(pokemonB + ' uses Psychic')
@@ -43,9 +44,10 @@ while (aHP > 0 && bHP > 0) {
     console.log(`${pokemonB} hits ${pokemonA} for ${damage} damage`)
     aHP = aHP - damage
     console.log(`${pokemonA}'s HP is reduced to ${aHP} HP`)
+    isMyTurn = !isMyTurn
   }
   console.log('----------------------')
-  isMyTurn = !isMyTurn
+ 
 }
 
 if (aHP <= 0) {
