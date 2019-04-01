@@ -5,7 +5,16 @@ const pokemonA: string = 'Snorlax'
 const pokemonB: string = 'Mr. Mime'
 let aHP: number = 300
 let bHP: number = 188
-const damage = 50
+const aAtk: number = 25
+const bAtk: number = 30
+const aDefend: number = 10
+const bDefend: number = 2
+const aSkilldmg: number = 4
+const bSkilldmg: number = 3
+const aDamage = (aAtk - bDefend) * aSkilldmg
+const bDamage = (bAtk - aDefend) * bSkilldmg
+//const aDamage = 50
+//const bDamage = 80
 
 console.log('You are now battling Sabrina')
 console.log('I am Sabrina, try to defeat me.')
@@ -15,39 +24,28 @@ console.log('Go, ' + pokemonA)
 console.log(`${pokemonA} has ${aHP} HP'`)
 console.log(`${pokemonB} has ${bHP} HP'`)
 
-// start with pokemonA turn
-// pokemonA does its move
-// check if pokemonB has fainted, stop the whole game
-// switch to pokemonB
-// pokemonB does its move
-// check if pokemonA has fainted, stop the whole game
-// repeat
+const performMove = (attacker, defender, damage, defenderHP) => {
+  console.log(`${attacker} hits ${defender} for ${damage} damage`)
+  defenderHP = defenderHP - damage
+  if (defenderHP < 0) {
+    defenderHP = 0
+  }
+  console.log(`${defender}'s HP is reduced to ${defenderHP} HP`)
+  return defenderHP
+}
 
-// condition to keep the game going
-// pokemonA's HP is more than 0 and pokemonB's HP is more than 0
-// pokemonA's HP is less or equal to 0
 console.log('----------------------')
 let isMyTurn = true
 while (aHP > 0 && bHP > 0) {
   if (isMyTurn) {
-    // i can pick a move
     console.log('You picked Body Slam')
-    // my pokemon hits opp pokemon
-    console.log(`${pokemonA} hits ${pokemonB} for ${damage} damage`)
-    bHP = bHP - damage
-    console.log(`${pokemonB}'s HP is reduced to ${bHP} HP`)
-    isMyTurn = !isMyTurn
+    bHP = performMove(pokemonA, pokemonB, aDamage, bHP)
   } else {
-    // i cannot pick a move
     console.log(pokemonB + ' uses Psychic')
-    // opp pokemon hits my pokemon
-    console.log(`${pokemonB} hits ${pokemonA} for ${damage} damage`)
-    aHP = aHP - damage
-    console.log(`${pokemonA}'s HP is reduced to ${aHP} HP`)
-    isMyTurn = !isMyTurn
+    aHP = performMove(pokemonB, pokemonA, bDamage, aHP)
   }
   console.log('----------------------')
- 
+  isMyTurn = !isMyTurn
 }
 
 if (aHP <= 0) {
