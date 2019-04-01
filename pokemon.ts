@@ -1,8 +1,12 @@
 import { question } from 'readline-sync'
 
+let freeze = 0
+let effectDmg: number = 0
+
 interface Skill {
   name: string
   damage: number
+  effect: string
 }
 
 interface Pokemon {
@@ -22,10 +26,12 @@ const pknA: Pokemon = {
     {
       name: 'Tackle',
       damage: 50,
+      effect: 'Sleep'
     },
     {
       name: 'Bubblebeam',
       damage: 70,
+      effect: ''
     },
   ],
 }
@@ -39,6 +45,7 @@ const pknB: Pokemon = {
     {
       name: 'Psychic',
       damage: 70,
+      effect: 'Poison'
     },
   ],
 }
@@ -52,10 +59,46 @@ console.log(`${pknA.name} has ${pknA.hp} HP'`)
 console.log(`${pknB.name} has ${pknB.hp} HP'`)
 
 const performMove = (attacker, defender, skill) => {
-  console.log(`${attacker.name} uses ${skill.name}`)
-  const damage = attacker.atk - defender.def + skill.damage
-  console.log(`${attacker.name} hits ${defender.name} for ${damage} damage`)
-  defender.hp = defender.hp - damage
+  console.log('**********************')
+  if (freeze){
+    //Display freeze
+    freeze = 0
+    console.log(`${defender.name} you being freeze for one round`)
+  }
+  else{
+    //skill 1
+    if (skill.effect == 'Poison'){
+      console.log(`${attacker.name} uses ${skill.name} with ${skill.effect} effect`)
+      let damage: number = attacker.atk - defender.def + skill.damage
+      defender.hp = defender.hp - damage
+      effectDmg = defender.hp/10
+      damage = damage + effectDmg
+      defender.hp = defender.hp - effectDmg
+      console.log(`${attacker.name} hits ${defender.name} for ${damage} damage`)
+          }
+    else {
+      if (skill.effect == 'Sleep'){
+        //skill 2
+        console.log(`${attacker.name} uses ${skill.name} with ${skill.effect} effect`)
+        const damage = attacker.atk - defender.def + skill.damage
+        console.log(`${attacker.name} hits ${defender.name} for ${damage} damage`)
+        defender.hp = defender.hp - damage
+        freeze = 1
+      }
+      else {
+        console.log(`${attacker.name} uses ${skill.name}`)
+        const damage = attacker.atk - defender.def + skill.damage
+        console.log(`${attacker.name} hits ${defender.name} for ${damage} damage`)
+        defender.hp = defender.hp - damage
+      }
+    }
+    
+  }
+
+ // console.log(`${attacker.name} uses ${skill.name}`)
+ // const damage = attacker.atk - defender.def + skill.damage
+ // console.log(`${attacker.name} hits ${defender.name} for ${damage} damage`)
+ // defender.hp = defender.hp - damage
 
   if (defender.hp < 0) {
     defender.hp = 0
@@ -98,7 +141,7 @@ while (pknA.hp > 0 && pknB.hp > 0) {
     } else {
     console.log(pknB.name + ' fainted')
     console.log('You won, GAME OVER')
-}
+    }
 
 // TODO: 7. Set the trainer's pokemon to 'x' for the defeated one.
 // TODO: 8. Another trainer's pokemon wil appear.
