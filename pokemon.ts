@@ -1,7 +1,8 @@
 import { question } from 'readline-sync'
 
-let freeze = 0
+let freeze: number = 0
 let effectDmg: number = 0
+let ahiteffect: string = ''
 
 interface Skill {
   name: string
@@ -14,23 +15,25 @@ interface Pokemon {
   hp: number
   atk: number
   def: number
+  hiteffect: string
   skills: Skill[]
 }
 
 const pknA: Pokemon = {
   name: 'Snorlax',
-  hp: 100,
+  hp: 300,
   atk: 30,
   def: 20,
+  hiteffect: 'N',
   skills: [
     {
       name: 'Tackle',
-      damage: 50,
+      damage: 20,
       effect: 'Sleep'
     },
     {
       name: 'Bubblebeam',
-      damage: 70,
+      damage: 30,
       effect: ''
     },
   ],
@@ -38,13 +41,14 @@ const pknA: Pokemon = {
 
 const pknB: Pokemon = {
   name: 'Mr. Mime',
-  hp: 200,
+  hp: 500,
   atk: 25,
   def: 25,
+  hiteffect: 'N',
   skills: [
     {
       name: 'Psychic',
-      damage: 70,
+      damage: 25,
       effect: 'Poison'
     },
   ],
@@ -59,11 +63,16 @@ console.log(`${pknA.name} has ${pknA.hp} HP'`)
 console.log(`${pknB.name} has ${pknB.hp} HP'`)
 
 const performMove = (attacker, defender, skill) => {
+  console.log(`2222${defender.hiteffect}1111`)
+  console.log(`freeze is ${freeze}`)
   console.log('**********************')
-  if (freeze){
-    //Display freeze
-    freeze = 0
-    console.log(`${defender.name} you being freeze for one round`)
+
+  if (attacker.hiteffect == 'sleep' && (freeze > 0 && freeze < 3)){
+    console.log(`${attacker.name} you being freeze for ${freeze} round`)
+    freeze += freeze
+    if (freeze > 3){
+      freeze = 0
+    }
   }
   else{
     //skill 1
@@ -83,7 +92,9 @@ const performMove = (attacker, defender, skill) => {
         const damage = attacker.atk - defender.def + skill.damage
         console.log(`${attacker.name} hits ${defender.name} for ${damage} damage`)
         defender.hp = defender.hp - damage
-        freeze = 1
+        if (freeze == 0){
+          freeze = 1
+        }
       }
       else {
         console.log(`${attacker.name} uses ${skill.name}`)
@@ -94,12 +105,6 @@ const performMove = (attacker, defender, skill) => {
     }
     
   }
-
- // console.log(`${attacker.name} uses ${skill.name}`)
- // const damage = attacker.atk - defender.def + skill.damage
- // console.log(`${attacker.name} hits ${defender.name} for ${damage} damage`)
- // defender.hp = defender.hp - damage
-
   if (defender.hp < 0) {
     defender.hp = 0
   }
@@ -119,8 +124,11 @@ while (pknA.hp > 0 && pknB.hp > 0) {
 
     const skillIndex = question('Please pick a skill\n')
     const skill = pknA.skills[skillIndex]
-
+    
     pknB.hp = performMove(pknA, pknB, skill)
+    if (skill.name == 'Tackle'){
+      pknB.hiteffect = 'sleep'
+    }
   } 
   else {
     for (const index in pknB.skills) {
@@ -130,6 +138,9 @@ while (pknA.hp > 0 && pknB.hp > 0) {
     const skillIndex = question('Please pick a skill\n')
     const skill = pknB.skills[skillIndex]
     pknA.hp = performMove(pknB, pknA, skill)
+    if (skill.name == 'Tackle'){
+      pknB.hiteffect = 'sleep'
+    }
   }
   console.log('----------------------')
   isMyTurn = !isMyTurn
